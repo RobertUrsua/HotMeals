@@ -34,16 +34,16 @@
 </div>
 
 <div id="restoMap" class="row" height="500px"></div>
-<button type="button" class="button" id="confirm-sel-button" style="width: 375px">Select This Restaurant</button>		
+<button type="button" class="button" id="confirm-sel-button" style="width: 375px">Select This Food Place</button>		
 <script type="text/javascript">
 	// Taking care of search bar 
 var mapDiv = document.getElementById('restoMap');
 
 var fpbutton = document.getElementById("foodpref-button");
 fpbutton.addEventListener("click", function(){
-	currentQuery = document.getElementById("foodpref-text-form").value + " restaurants";
+	currentQuery = document.getElementById("foodpref-text-form").value + " food";
 	myLocation = map.getCenter();	
-	findRestaurants();
+	findfoodPlaces();
 })
 
 
@@ -57,7 +57,7 @@ $("#foodpref-text-form").keyup(function(event){
 });
 
 var markerSelected = false;
-var sendThisName = 'restaurant';
+var sendThisName = 'foodPlace';
 
 var conbutton = document.getElementById("confirm-sel-button");
 conbutton.addEventListener("click", function(){
@@ -69,7 +69,7 @@ conbutton.addEventListener("click", function(){
 // Taking care of google map
 
 //default values
-var currentQuery = "restaurants";
+var currentQuery = "food";
 var currentSearchRadius = "1000";	
 var yourPositionSet = false;
 
@@ -114,10 +114,10 @@ function initMap() {
 	];
 
 	map.setOptions({styles: noPoi});
-	findRestaurants();
+	findfoodPlaces();
 }
 
-function findRestaurants(){
+function findfoodPlaces(){
 
 
 	for(var i=0;i<addedMarkers.length;i++){
@@ -157,25 +157,25 @@ function findRestaurants(){
 
 
    	// Request JSON for for using the Google Places API
-   	// the api will be used to retrieve restaurants within 1000m of the user's location
+   	// the api will be used to retrieve foodPlaces within 1000m of the user's location
     var request = {
 		location: map.getCenter(),
 		radius: currentSearchRadius,
 		query: currentQuery
 	};
 
-	// Send the request and call the addRestaurantMarkers
-	// to include the restaurants on the map being shows
+	// Send the request and call the addfoodPlaceMarkers
+	// to include the foodPlaces on the map being shows
 	var googPlaceService = new google.maps.places.PlacesService(map);
-	googPlaceService.textSearch(request, addRestaurantMarkers);
+	googPlaceService.textSearch(request, addfoodPlaceMarkers);
 }
 
 	
-function addRestaurantMarkers(results, status) {
+function addfoodPlaceMarkers(results, status) {
 	// If request was successful
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
 
-		// Iterate through ALL restaurants, add their markers, and add the popup info for each marker
+		// Iterate through ALL foodPlaces, add their markers, and add the popup info for each marker
 		for (var i = 0; i < results.length; i++) {
 			var place = results[i];
 
@@ -194,17 +194,22 @@ function addRestaurantMarkers(results, status) {
     			icon: icon
 			});		
 
-			// place holder variable for information about how many means a restaurant can provide
+			// place holder variable for information about how many means a foodPlace can provide
 			var mealCountInfo = Math.floor(Math.random()*10);
 
-			// place holder variable for type of food that a restaurant will provid
-			// var foodType = "Vegan, Vegetarian, Gluten-Free, Organic";
-			// <div class=&quot;riw-row&quot;><span class=&quot;riw-title&quot;> Food: </span>  	<span class=&quot;riw-data&quot;>" + foodType + "</span> </div> 
+			// place holder variable for time that a foodPlace will provide food
+			var hour =  Math.floor(Math.random()*12) + 1;
+			var time;
+			if(Math.random()>0.5)
+				time = hour.toString() + "AM";
+			else
+				time = hour.toString() + "PM";
+
 
 			// Creates the info window aka popup
 			var newInfoWindow = new google.maps.InfoWindow({
 				content: 
-				"<div class=&quot;resto-info-window&quot;><div class=&quot;riw-row&quot;><span class=&quot;riw-title&quot;> " +  results[i].name + "  </span>	<span class=&quot;riw-data&quot;></span></div><div class=&quot;riw-row&quot;> <span class=&quot;riw-title&quot;> Meal Count: </span><span class=&quot;riw-data&quot;> " + mealCountInfo + " </span>  </div> </div>"
+				"<div class=&quot;resto-info-window&quot;><div class=&quot;riw-row&quot;><span class=&quot;riw-title&quot;> " +  results[i].name + "  </span>	<span class=&quot;riw-data&quot;></span></div><div class=&quot;riw-row&quot;> <span class=&quot;riw-title&quot;> Meal Count: </span><span class=&quot;riw-data&quot;> " + mealCountInfo + " </span>  </div><div class=&quot;riw-row&quot;> <span class=&quot;riw-title&quot;> Start Time: </span><span class=&quot;riw-data&quot;> " + time + " </span>  </div> </div>"
 			});
 
 
